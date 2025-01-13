@@ -1,52 +1,47 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Hosting;
-using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
 
 public class CategoriesController : Controller
 {
     private readonly ApplicationDbContext _context;
-    private readonly IWebHostEnvironment _webHostEnvironment;
 
-    public CategoriesController(ApplicationDbContext context, IWebHostEnvironment webHostEnvironment)
+    public CategoriesController(ApplicationDbContext context)
     {
         _context = context;
-        _webHostEnvironment = webHostEnvironment; // Injected here
     }
 
-    // GET: Categories
+    // GET: Category
     public async Task<IActionResult> Index()
     {
-        return View(await _context.Categories.ToListAsync());
+        var categories = await _context.Categories.ToListAsync();
+        return View(categories);
     }
 
-    // GET: Categories/Details/5
+    // GET: Category/Details/5
     public async Task<IActionResult> Details(int? id)
     {
         if (id == null)
-        {
             return NotFound();
-        }
 
         var category = await _context.Categories
             .Include(c => c.Articles)
             .FirstOrDefaultAsync(m => m.Id == id);
 
         if (category == null)
-        {
             return NotFound();
-        }
 
         return View(category);
     }
 
-    // GET: Categories/Create
+    // GET: Category/Create
     public IActionResult Create()
     {
         return View();
     }
 
-    // POST: Categories/Create
+    // POST: Category/Create
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create([Bind("Name")] Category category)
@@ -60,32 +55,27 @@ public class CategoriesController : Controller
         return View(category);
     }
 
-    // GET: Categories/Edit/5
+    // GET: Category/Edit/5
     public async Task<IActionResult> Edit(int? id)
     {
         if (id == null)
-        {
             return NotFound();
-        }
 
         var category = await _context.Categories.FindAsync(id);
+
         if (category == null)
-        {
             return NotFound();
-        }
 
         return View(category);
     }
 
-    // POST: Categories/Edit/5
+    // POST: Category/Edit/5
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit(int id, [Bind("Id,Name")] Category category)
     {
         if (id != category.Id)
-        {
             return NotFound();
-        }
 
         if (ModelState.IsValid)
         {
@@ -97,50 +87,41 @@ public class CategoriesController : Controller
             catch (DbUpdateConcurrencyException)
             {
                 if (!CategoryExists(category.Id))
-                {
                     return NotFound();
-                }
                 else
-                {
                     throw;
-                }
             }
             return RedirectToAction(nameof(Index));
         }
+        return View(category);
+    }
+
+    // GET: Category/Delete/5
+    public async Task<IActionResult> Delete(int? id)
+    {
+        if (id == null)
+            return NotFound();
+
+        var category = await _context.Categories
+            .FirstOrDefaultAsync(m => m.Id == id);
+
+        if (category == null)
+            return NotFound();
 
         return View(category);
     }
 
-    // POST: Categories/Delete/5
+    // POST: Category/Delete/5
     [HttpPost, ActionName("Delete")]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> DeleteConfirmed(int id)
     {
-        var category = await _context.Categories
-            .Include(c => c.Articles)
-            .FirstOrDefaultAsync(c => c.Id == id);
-
+        var category = await _context.Categories.FindAsync(id);
         if (category != null)
         {
-            foreach (var article in category.Articles)
-            {
-                if (!string.IsNullOrEmpty(article.ImagePath) && article.ImagePath != "/uploads/placeholder.png")
-                {
-                    string fullPath = Path.Combine(_webHostEnvironment.WebRootPath, article.ImagePath.TrimStart('/'));
-                    if (System.IO.File.Exists(fullPath))
-                    {
-                        System.IO.File.Delete(fullPath);
-                    }
-                }
-            }
-
-            _context.Articles.RemoveRange(category.Articles);
-
             _context.Categories.Remove(category);
-
             await _context.SaveChangesAsync();
         }
-
         return RedirectToAction(nameof(Index));
     }
 

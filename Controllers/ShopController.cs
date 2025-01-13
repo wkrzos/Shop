@@ -22,7 +22,6 @@ public class ShopController : Controller
     {
         var category = await _context.Categories
             .Include(c => c.Articles)
-            .ThenInclude(a => a.Category)
             .FirstOrDefaultAsync(c => c.Id == id);
 
         if (category == null)
