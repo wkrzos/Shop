@@ -1,0 +1,20 @@
+@{
+    ViewData["Title"] = "Shop";
+    var categories = ViewData["Categories"] as IEnumerable<Category>;
+}
+
+<h1>Shop</h1>
+
+<form asp-action="ByCategory" method="get" class="mb-4">
+    <div class="form-group">
+        <label for="categorySelect">Select a Category:</label>
+        <select id="categorySelect" name="id" class="form-control">
+            <option value="" disabled selected>Select a category</option>
+            @foreach (var category in categories)
+            {
+                <option value="@category.Id">@category.Name</option>
+            }
+        </select>
+    </div>
+    <button type="submit" class="btn btn-primary">View Articles</button>
+</form>

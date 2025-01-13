@@ -48,7 +48,7 @@ public class ArticlesListContext : IArticlesContext
             Name = "Test Article",
             Price = 19.99M,
             ExpiryDate = DateTime.Now.AddMonths(1),
-            Category = Category.Food
+            //Category = Category.Food
         });
     }
 }

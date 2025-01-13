@@ -1,35 +1,35 @@
 @model IEnumerable<Article>
-
-@section Section1
-{
-    <div> Here is an example for Section1 :) </div>
+@{
+    ViewData["Title"] = "Articles";
 }
 
-<h2>Articles</h2>
-<a asp-action="Create">Create New Article</a>
-<table>
-    <thead>
-        <tr>
-            <th>Name</th>
-            <th>Price</th>
-            <th>Expiry Date</th>
-            <th>Category</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var article in Model)
-        {
-            <tr>
-                <td>@article.Name</td>
-                <td>@article.Price</td>
-                <td>@article.ExpiryDate.ToShortDateString()</td>
-                <td>@article.Category</td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@article.Id">Edit</a> |
-                    <a asp-action="Delete" asp-route-id="@article.Id">Delete</a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+<h1>Articles</h1>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">Create New Article</a>
+</p>
+
+<div class="row">
+    @foreach (var item in Model)
+    {
+        <div class="col-md-3 mb-4">
+            <div class="card">
+                <img 
+                    src="@(!string.IsNullOrEmpty(item.ImagePath) ? item.ImagePath : "/uploads/placeholder.png")" 
+                    class="card-img-top" 
+                    alt="Article Image" 
+                    style="height: 150px; object-fit: cover;" />
+                <div class="card-body">
+                    <h5 class="card-title">@item.Name</h5>
+                    <p class="card-text">Price: @item.Price.ToString("C")</p>
+                    <p class="card-text">Category: @item.Category?.Name</p>
+                    <div class="d-flex justify-content-between">
+                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info btn-sm">Details</a>
+                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning btn-sm">Edit</a>
+                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger btn-sm">Delete</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>

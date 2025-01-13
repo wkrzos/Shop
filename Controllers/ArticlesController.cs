@@ -1,78 +1,170 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 
 public class ArticlesController : Controller
 {
-    private readonly IArticlesContext _context;
+    private readonly ApplicationDbContext _context;
+    private readonly IWebHostEnvironment _webHostEnvironment;
 
-    // Constructor: Injects the IArticlesContext dependency
-    public ArticlesController(IArticlesContext context)
+    public ArticlesController(ApplicationDbContext context, IWebHostEnvironment webHostEnvironment)
     {
-        _context = context ?? throw new ArgumentNullException(nameof(context));
+        _context = context;
+        _webHostEnvironment = webHostEnvironment;
     }
 
-    // Displays a list of articles
-    public IActionResult Index()
+    // GET: Articles
+    public async Task<IActionResult> Index()
     {
-        var articles = _context.GetAll();
+        var articles = await _context.Articles.Include(a => a.Category).ToListAsync();
         return View(articles);
     }
 
-    // GET: Displays the Create page
+    // GET: Articles/Details/5
+    public async Task<IActionResult> Details(int? id)
+    {
+        if (id == null)
+            return NotFound();
+
+        var article = await _context.Articles
+            .Include(a => a.Category)
+            .FirstOrDefaultAsync(m => m.Id == id);
+
+        if (article == null)
+            return NotFound();
+
+        return View(article);
+    }
+
+    // GET: Articles/Create
     public IActionResult Create()
     {
+        ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name");
         return View();
     }
 
-    // POST: Handles the creation of a new article
+    // POST: Articles/Create
     [HttpPost]
-    [ValidateAntiForgeryToken] // Protects against CSRF attacks
-    public IActionResult Create(Article article)
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Create([Bind("Name,Price,ExpiryDate,CategoryId")] Article article, IFormFile imageFile)
     {
         if (ModelState.IsValid)
         {
+            if (imageFile != null && imageFile.Length > 0)
+            {
+                string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "uploads");
+                Directory.CreateDirectory(uploadsFolder);
+
+                string uniqueFileName = Guid.NewGuid().ToString() + "_" + Path.GetFileName(imageFile.FileName);
+                string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                {
+                    await imageFile.CopyToAsync(fileStream);
+                }
+
+                article.ImagePath = "/uploads/" + uniqueFileName;
+            }
+            else
+            {
+                article.ImagePath = "/uploads/placeholder.png";
+            }
+
             _context.Add(article);
+            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
+
+        ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name", article.CategoryId);
         return View(article);
     }
 
-    public IActionResult Edit(int id)
+    // GET: Articles/Edit/5
+    public async Task<IActionResult> Edit(int? id)
     {
-        var article = _context.GetById(id); // Retrieve the article
+        if (id == null)
+            return NotFound();
+
+        var article = await _context.Articles.FindAsync(id);
         if (article == null)
-        {
-            return NotFound(); // If not found, return a 404 error
-        }
-        return View(article); // Pass the article to the view
+            return NotFound();
+
+        ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name", article.CategoryId);
+        return View(article);
     }
 
-    // POST: Handles editing an existing article
+    // POST: Articles/Edit/5
     [HttpPost]
-    [ValidateAntiForgeryToken] // Protects against CSRF attacks
-    public IActionResult Edit(Article article)
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Price,ExpiryDate,CategoryId,ImagePath")] Article article)
     {
+        if (id != article.Id)
+            return NotFound();
+
         if (ModelState.IsValid)
         {
-            _context.Update(article);
+            try
+            {
+                _context.Update(article);
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!ArticleExists(article.Id))
+                    return NotFound();
+                else
+                    throw;
+            }
             return RedirectToAction(nameof(Index));
         }
+
+        ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name", article.CategoryId);
         return View(article);
     }
 
-    // GET: Displays the Delete confirmation page
-    public IActionResult Delete(int id)
+    // GET: Articles/Delete/5
+    public async Task<IActionResult> Delete(int? id)
     {
-        var article = _context.GetById(id);
-        if (article == null) return NotFound();
+        if (id == null)
+            return NotFound();
+
+        var article = await _context.Articles
+            .Include(a => a.Category)
+            .FirstOrDefaultAsync(m => m.Id == id);
+
+        if (article == null)
+            return NotFound();
+
         return View(article);
     }
 
-    // POST: Handles deletion of an article
+    // POST: Articles/Delete/5
     [HttpPost, ActionName("Delete")]
-    [ValidateAntiForgeryToken] // Protects against CSRF attacks
-    public IActionResult DeleteConfirmed(int id)
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> DeleteConfirmed(int id)
     {
-        _context.Delete(id);
+        var article = await _context.Articles.FindAsync(id);
+        if (article != null)
+        {
+            // Delete image file if it exists
+            if (!string.IsNullOrEmpty(article.ImagePath))
+            {
+                string fullPath = Path.Combine(_webHostEnvironment.WebRootPath, article.ImagePath.TrimStart('/'));
+                if (System.IO.File.Exists(fullPath))
+                {
+                    System.IO.File.Delete(fullPath);
+                }
+            }
+
+            _context.Articles.Remove(article);
+            await _context.SaveChangesAsync();
+        }
+
         return RedirectToAction(nameof(Index));
+    }
+
+    private bool ArticleExists(int id)
+    {
+        return _context.Articles.Any(e => e.Id == id);
     }
 }
