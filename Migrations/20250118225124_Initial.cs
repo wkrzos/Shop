@@ -34,7 +34,7 @@ namespace Shop.Migrations
                     Price = table.Column<decimal>(type: "TEXT", nullable: false),
                     ImagePath = table.Column<string>(type: "TEXT", nullable: true),
                     ExpiryDate = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    CategoryId = table.Column<int>(type: "INTEGER", nullable: false)
+                    CategoryId = table.Column<int>(type: "INTEGER", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -44,7 +44,7 @@ namespace Shop.Migrations
                         column: x => x.CategoryId,
                         principalTable: "Categories",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.SetNull);
                 });
 
             migrationBuilder.CreateIndex(

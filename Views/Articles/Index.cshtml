@@ -15,7 +15,7 @@
         <div class="col-md-3 mb-4">
             <div class="card">
                 <img 
-                    src="@(!string.IsNullOrEmpty(item.ImagePath) ? item.ImagePath : "/uploads/placeholder.png")" 
+                    src="@(!string.IsNullOrEmpty(item.ImagePath) ? item.ImagePath : "/uploads/placeholder.jpg")" 
                     class="card-img-top" 
                     alt="Article Image" 
                     style="height: 150px; object-fit: cover;" />
@@ -32,4 +32,8 @@
             </div>
         </div>
     }
+</div>
+
+<div>
+    <p><strong>Total Price:</strong> @Model.Sum(x => x.Price).ToString("C")</p>
 </div>

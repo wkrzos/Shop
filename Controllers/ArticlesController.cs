@@ -46,7 +46,7 @@ public class ArticlesController : Controller
     // POST: Articles/Create
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create([Bind("Name,Price,ExpiryDate,CategoryId")] Article article, IFormFile imageFile)
+    public async Task<IActionResult> Create([Bind("Name,Price,ExpiryDate,CategoryId")] Article article, IFormFile? imageFile)
     {
         if (ModelState.IsValid)
         {
@@ -67,7 +67,7 @@ public class ArticlesController : Controller
             }
             else
             {
-                article.ImagePath = "/uploads/placeholder.png";
+                article.ImagePath = "/uploads/placeholder.jpg";
             }
 
             _context.Add(article);

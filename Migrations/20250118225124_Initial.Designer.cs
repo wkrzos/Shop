@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Shop.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250113032100_Initial")]
+    [Migration("20250118225124_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -25,7 +25,7 @@ namespace Shop.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("CategoryId")
+                    b.Property<int?>("CategoryId")
                         .HasColumnType("INTEGER");
 
                     b.Property<DateTime>("ExpiryDate")
@@ -68,8 +68,7 @@ namespace Shop.Migrations
                     b.HasOne("Category", "Category")
                         .WithMany("Articles")
                         .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.Navigation("Category");
                 });

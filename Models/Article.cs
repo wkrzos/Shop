@@ -8,6 +8,6 @@ public class Article
 
     public DateTime ExpiryDate { get; set; }
     
-    public int CategoryId { get; set; }
+    public int? CategoryId { get; set; }
     public Category? Category { get; set; }
 }
