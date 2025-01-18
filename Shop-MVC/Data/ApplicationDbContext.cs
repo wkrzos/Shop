@@ -19,6 +19,6 @@ public class ApplicationDbContext : DbContext
             .HasMany(c => c.Articles)
             .WithOne(a => a.Category)
             .HasForeignKey(a => a.CategoryId)
-            .OnDelete(DeleteBehavior.SetNull); // Change Cascade -> SetNull
+            .OnDelete(DeleteBehavior.SetNull);
     }
 }
