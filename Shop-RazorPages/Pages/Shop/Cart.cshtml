@@ -1,0 +1,65 @@
+@page
+@model Shop_RazorPages.Pages.Shop.CartModel
+@{
+    ViewData["Title"] = "Your Cart";
+    var total = Model.CartItems.Sum(x => x.TotalPrice);
+}
+
+<h1>Your Cart</h1>
+
+@if(!Model.CartItems.Any())
+{
+    <p>Your cart is empty.</p>
+}
+else
+{
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Article</th>
+                <th>Price</th>
+                <th>Quantity</th>
+                <th>Total for Item</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach(var item in Model.CartItems)
+        {
+            <tr>
+                <td>@item.ArticleName</td>
+                <td>@item.Price</td>
+                <td>@item.Quantity</td>
+                <td>@item.TotalPrice</td>
+                <td>
+                    <a class="btn btn-sm btn-success"
+                       asp-route-handler="AddToCart"
+                       asp-route-articleId="@item.ArticleId">
+                        +1
+                    </a>
+                    <a class="btn btn-sm btn-warning"
+                       asp-route-handler="RemoveOne"
+                       asp-route-articleId="@item.ArticleId">
+                        -1
+                    </a>
+                    <a class="btn btn-sm btn-danger"
+                       asp-route-handler="RemoveItem"
+                       asp-route-articleId="@item.ArticleId">
+                        Remove All
+                    </a>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+
+    <p>
+        <strong>Total:</strong> @total
+    </p>
+}
+
+<a asp-page="./Index" class="btn btn-secondary">Continue Shopping</a>
+<a class="btn btn-danger"
+   asp-route-handler="ClearCart">
+   Clear Cart
+</a>

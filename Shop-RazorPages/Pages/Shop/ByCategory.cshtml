@@ -1,0 +1,37 @@
+@page "{id:int}"
+@model Shop_RazorPages.Pages.Shop.ByCategoryModel
+@{
+    ViewData["Title"] = "Articles in " + Model.SelectedCategoryName;
+}
+
+<h1>Articles in @Model.SelectedCategoryName</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Price</th>
+            <th>Add to Cart</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach(var article in Model.Articles)
+    {
+        <tr>
+            <td>@article.Name</td>
+            <td>@article.Price</td>
+            <td>
+                <!-- Go to the Cart page with handler=AddToCart & pass articleId -->
+                <a asp-page="./Cart"
+                   asp-route-handler="AddToCart"
+                   asp-route-articleId="@article.Id"
+                   class="btn btn-sm btn-primary">
+                    Add to Cart
+                </a>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+<a asp-page="./Index" class="btn btn-secondary">Back to Categories</a>

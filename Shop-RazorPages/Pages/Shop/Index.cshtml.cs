@@ -7,9 +7,9 @@ namespace Shop_RazorPages.Pages.Shop
 {
     public class IndexModel : PageModel
     {
-        private readonly ApplicationDbContext _db;
+        private readonly AppDbContext _db;
 
-        public IndexModel(ApplicationDbContext db)
+        public IndexModel(AppDbContext db)
         {
             _db = db;
         }
