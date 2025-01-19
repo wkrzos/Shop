@@ -1,0 +1,44 @@
+@page "{id:int}"
+@model Shop_RazorPages.Pages.Articles.EditModel
+@{
+    ViewData["Title"] = "Edit Article";
+}
+
+<h1>Edit Article</h1>
+
+<form method="post">
+    <input type="hidden" asp-for="Article.Id" />
+    
+    <div>
+        <label>Name:</label>
+        <input type="text" asp-for="Article.Name" />
+        <span asp-validation-for="Article.Name"></span>
+    </div>
+
+    <div>
+        <label>Price:</label>
+        <input type="number" asp-for="Article.Price" step="0.01" />
+        <span asp-validation-for="Article.Price"></span>
+    </div>
+
+    <div>
+        <label>Category:</label>
+        <select asp-for="Article.CategoryId">
+            <option value="">-- Select Category --</option>
+            @foreach (var category in Model.Categories)
+            {
+                <option value="@category.Id">@category.Name</option>
+            }
+        </select>
+        <span asp-validation-for="Article.CategoryId"></span>
+    </div>
+
+    <div>
+        <label>Expiry Date:</label>
+        <input type="date" asp-for="Article.ExpiryDate" />
+        <span asp-validation-for="Article.ExpiryDate"></span>
+    </div>
+
+    <button type="submit">Save</button>
+    <a asp-page="./Index">Cancel</a>
+</form>

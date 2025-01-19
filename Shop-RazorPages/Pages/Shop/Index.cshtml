@@ -1,0 +1,18 @@
+@page
+@model Shop_RazorPages.Pages.Shop.IndexModel
+@{
+    ViewData["Title"] = "Categories";
+}
+
+<h1>Categories</h1>
+
+<ul>
+    @foreach(var category in Model.Categories)
+    {
+        <li>
+            <a asp-page="./ByCategory" asp-route-id="@category.Id">
+                @category.Name
+            </a>
+        </li>
+    }
+</ul>

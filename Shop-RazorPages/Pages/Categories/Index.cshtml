@@ -1,0 +1,32 @@
+@page
+@model Shop_RazorPages.Pages.Categories.IndexModel
+@{
+    ViewData["Title"] = "Categories";
+}
+
+<h1>Categories</h1>
+<a asp-page="./Create">Add New Category</a>
+<hr />
+
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Articles Count</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var cat in Model.Categories)
+    {
+        <tr>
+            <td>@cat.Name</td>
+            <td>@cat.Articles?.Count</td>
+            <td>
+                <a asp-page="./Edit" asp-route-id="@cat.Id">Edit</a> |
+                <a asp-page="./Delete" asp-route-id="@cat.Id">Delete</a>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>

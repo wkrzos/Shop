@@ -1,0 +1,18 @@
+@page
+@model Shop_RazorPages.Pages.Categories.CreateModel
+@{
+    ViewData["Title"] = "Create Category";
+}
+
+<h1>Create Category</h1>
+
+<form method="post">
+    <div>
+        <label for="Name">Name:</label>
+        <input type="text" asp-for="Category.Name" />
+        <span asp-validation-for="Category.Name"></span>
+    </div>
+
+    <button type="submit">Save</button>
+    <a asp-page="./Index">Cancel</a>
+</form>

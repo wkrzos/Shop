@@ -1,0 +1,15 @@
+@page "{id:int}"
+@model Shop_RazorPages.Pages.Categories.DeleteModel
+@{
+    ViewData["Title"] = "Delete Category";
+}
+
+<h1>Delete Category</h1>
+
+<p>Are you sure you want to delete "@Model.Category.Name"?</p>
+
+<form method="post">
+    <input type="hidden" asp-for="Category.Id" />
+    <button type="submit">Yes, Delete</button>
+    <a asp-page="./Index">Cancel</a>
+</form>

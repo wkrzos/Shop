@@ -1,0 +1,46 @@
+@page
+@model Shop_RazorPages.Pages.Articles.IndexModel
+@{
+    ViewData["Title"] = "Articles";
+}
+
+<h1>Articles</h1>
+<a asp-page="./Create" class="btn btn-primary mb-3">Add New Article</a>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Photo</th>
+            <th>Name</th>
+            <th>Price</th>
+            <th>Category</th>
+            <th>Expiry Date</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var article in Model.Articles)
+    {
+        <tr>
+            <td>
+                @if(!string.IsNullOrEmpty(article.ImagePath))
+                {
+                    <img src="@article.ImagePath" alt="Article Photo" style="max-height: 80px;" />
+                }
+                else
+                {
+                    <span>No Image</span>
+                }
+            </td>
+            <td>@article.Name</td>
+            <td>@article.Price</td>
+            <td>@(article.Category?.Name ?? "None")</td>
+            <td>@article.ExpiryDate.ToShortDateString()</td>
+            <td>
+                <a asp-page="./Edit" asp-route-id="@article.Id">Edit</a> |
+                <a asp-page="./Delete" asp-route-id="@article.Id">Delete</a>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>

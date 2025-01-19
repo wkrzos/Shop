@@ -1,0 +1,20 @@
+@page "{id:int}"
+@model Shop_RazorPages.Pages.Articles.DeleteModel
+@{
+    ViewData["Title"] = "Delete Article";
+}
+
+<h1>Delete Article</h1>
+<p>Are you sure you want to delete "@Model.Article.Name"?</p>
+
+@if(!string.IsNullOrEmpty(Model.Article.ImagePath))
+{
+    <p>Photo:</p>
+    <img src="@Model.Article.ImagePath" alt="Article Photo" style="max-height: 100px;" />
+}
+
+<form method="post">
+    <input type="hidden" asp-for="Article.Id" />
+    <button type="submit" class="btn btn-danger">Yes, Delete</button>
+    <a asp-page="./Index" class="btn btn-secondary">Cancel</a>
+</form>

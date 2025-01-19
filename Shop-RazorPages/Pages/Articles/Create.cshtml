@@ -1,0 +1,46 @@
+@page
+@model Shop_RazorPages.Pages.Articles.CreateModel
+@{
+    ViewData["Title"] = "Create Article";
+}
+
+<h1>Create Article</h1>
+
+<form method="post" enctype="multipart/form-data">
+    <div class="mb-3">
+        <label asp-for="Article.Name" class="form-label"></label>
+        <input asp-for="Article.Name" class="form-control" />
+        <span asp-validation-for="Article.Name" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Article.Price" class="form-label"></label>
+        <input asp-for="Article.Price" class="form-control" step="0.01" />
+        <span asp-validation-for="Article.Price" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Article.CategoryId" class="form-label">Category</label>
+        <select asp-for="Article.CategoryId" class="form-control">
+            <option value="">-- Select Category --</option>
+            @foreach (var cat in Model.Categories)
+            {
+                <option value="@cat.Id">@cat.Name</option>
+            }
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Article.ExpiryDate" class="form-label"></label>
+        <input asp-for="Article.ExpiryDate" type="date" class="form-control" />
+        <span asp-validation-for="Article.ExpiryDate" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label for="Upload" class="form-label">Article Photo</label>
+        <input type="file" id="Upload" name="Upload" class="form-control" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Save</button>
+    <a asp-page="./Index" class="btn btn-secondary">Cancel</a>
+</form>
