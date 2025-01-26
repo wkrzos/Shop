@@ -1,6 +1,6 @@
 // Data/AppDbContext.cs
 using Microsoft.EntityFrameworkCore;
-using Shop_RazorPages.Models; // or your namespace
+using Shop_RazorPages.Models;
 
 namespace Shop_RazorPages.Data
 {

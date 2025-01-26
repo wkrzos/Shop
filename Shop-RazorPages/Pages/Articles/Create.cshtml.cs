@@ -3,10 +3,12 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Shop_RazorPages.Data;
 using Shop_RazorPages.Models;
 using System.IO;
-using Microsoft.AspNetCore.Hosting; // For IWebHostEnvironment
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Shop_RazorPages.Pages.Articles
 {
+    [Authorize(Policy = "AdminPolicy")]
     public class CreateModel : PageModel
     {
         private readonly AppDbContext _db;

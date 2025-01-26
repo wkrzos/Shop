@@ -11,8 +11,8 @@ using Shop_RazorPages.Data;
 namespace Shop_RazorPages.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250119010349_AddCartItem")]
-    partial class AddCartItem
+    [Migration("20250126180557_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
