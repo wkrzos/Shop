@@ -3,9 +3,11 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Shop_RazorPages.Data;
 using Shop_RazorPages.Models;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Shop_RazorPages.Pages.Articles
 {
+    [Authorize(Policy = "AdminPolicy")]
     public class DeleteModel : PageModel
     {
         private readonly AppDbContext _db;

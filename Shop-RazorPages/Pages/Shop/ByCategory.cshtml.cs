@@ -9,6 +9,7 @@ namespace Shop_RazorPages.Pages.Shop
     public class ByCategoryModel : PageModel
     {
         private readonly AppDbContext _db;
+        private const int PageSize = 5; // how many articles to show initially
 
         public ByCategoryModel(AppDbContext db)
         {
@@ -19,21 +20,28 @@ namespace Shop_RazorPages.Pages.Shop
         public int Id { get; set; }
 
         public string SelectedCategoryName { get; set; } = string.Empty;
+
+        // The initial chunk of articles to display
         public List<Article> Articles { get; set; } = new();
 
         public async Task<IActionResult> OnGetAsync()
         {
+            // Load the category
             var category = await _db.Categories
-                .Include(c => c.Articles)
                 .FirstOrDefaultAsync(c => c.Id == Id);
 
             if (category == null)
-            {
                 return NotFound();
-            }
 
             SelectedCategoryName = category.Name;
-            Articles = category.Articles.ToList();
+
+            // Load only the first chunk of articles for this category
+            Articles = await _db.Articles
+                .Where(a => a.CategoryId == Id)
+                .OrderBy(a => a.Id)
+                .Take(PageSize)
+                .ToListAsync();
+
             return Page();
         }
     }

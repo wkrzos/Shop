@@ -56,6 +56,17 @@ else
     <p>
         <strong>Total:</strong> @total
     </p>
+
+    <a asp-page="./Index" class="btn btn-secondary">Continue Shopping</a>
+    <a class="btn btn-danger"
+    asp-route-handler="ClearCart">
+    Clear Cart
+    </a>
+
+    <a asp-page="./Order" class="btn btn-primary">
+    Place Order
+    </a>
+
 }
 
 <a asp-page="./Index" class="btn btn-secondary">Continue Shopping</a>

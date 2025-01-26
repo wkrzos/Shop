@@ -1,0 +1,72 @@
+@page
+@model Shop_RazorPages.Pages.Shop.OrderModel
+@{
+    ViewData["Title"] = "Order Summary";
+}
+
+<h2>Order Summary</h2>
+
+@if(!Model.CartItems.Any())
+{
+    <p>Your cart is empty.</p>
+}
+else
+{
+    <!-- 1. Read-only table of cart items (no +1/-1 actions) -->
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Article</th>
+                <th>Price</th>
+                <th>Quantity</th>
+                <th>Total for Item</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.CartItems)
+            {
+                <tr>
+                    <td>@item.ArticleName</td>
+                    <td>@item.Price</td>
+                    <td>@item.Quantity</td>
+                    <td>@item.TotalPrice</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <p><strong>Total:</strong> @Model.CartItems.Sum(x => x.TotalPrice)</p>
+
+    <hr/>
+
+    <!-- 2. Form for personal data, address, payment -->
+    <h3>Shipping Information</h3>
+    <form method="post">
+        <div class="mb-3">
+            <label asp-for="Input.FullName" class="form-label"></label>
+            <input asp-for="Input.FullName" class="form-control" />
+            <span asp-validation-for="Input.FullName" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Input.Address" class="form-label"></label>
+            <input asp-for="Input.Address" class="form-control" />
+            <span asp-validation-for="Input.Address" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Input.PaymentMethod" class="form-label"></label>
+            <select asp-for="Input.PaymentMethod" class="form-select">
+                @foreach (var method in Model.PaymentMethods)
+                {
+                    <option value="@method">@method</option>
+                }
+            </select>
+            <span asp-validation-for="Input.PaymentMethod" class="text-danger"></span>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Confirm Order</button>
+    </form>
+
+    <span asp-validation-summary="All" class="text-danger"></span>
+}
