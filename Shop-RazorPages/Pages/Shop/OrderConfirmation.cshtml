@@ -1,0 +1,49 @@
+@page
+@model Shop_RazorPages.Pages.Shop.OrderConfirmationModel
+@{
+    ViewData["Title"] = "Order Confirmation";
+}
+
+<h2>Thank you for your order!</h2>
+
+@if(!Model.CartItems.Any())
+{
+    <p>Your cart was empty or has been cleared.</p>
+}
+else
+{
+    <p><strong>Order for:</strong> @Model.FullName</p>
+    <p><strong>Shipping Address:</strong> @Model.Address</p>
+    <p><strong>Payment Method:</strong> @Model.PaymentMethod</p>
+
+    <hr />
+
+    <h3>Order Details</h3>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Article</th>
+                <th>Price</th>
+                <th>Quantity</th>
+                <th>Total for Item</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.CartItems)
+            {
+                <tr>
+                    <td>@item.ArticleName</td>
+                    <td>@item.Price</td>
+                    <td>@item.Quantity</td>
+                    <td>@item.TotalPrice</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <p><strong>Order Total:</strong> @Model.CartItems.Sum(x => x.TotalPrice)</p>
+}
+
+<hr />
+<p>Your cart has now been cleared.</p>
+
+<a asp-page="./Index" class="btn btn-primary">Back to Shop</a>

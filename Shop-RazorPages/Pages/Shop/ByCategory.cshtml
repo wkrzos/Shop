@@ -6,6 +6,7 @@
 
 <h1>Articles in @Model.SelectedCategoryName</h1>
 
+<!-- Table of articles -->
 <table class="table">
     <thead>
         <tr>
@@ -14,24 +15,94 @@
             <th>Add to Cart</th>
         </tr>
     </thead>
-    <tbody>
-    @foreach(var article in Model.Articles)
-    {
-        <tr>
-            <td>@article.Name</td>
-            <td>@article.Price</td>
-            <td>
-                <!-- Go to the Cart page with handler=AddToCart & pass articleId -->
-                <a asp-page="./Cart"
-                   asp-route-handler="AddToCart"
-                   asp-route-articleId="@article.Id"
-                   class="btn btn-sm btn-primary">
-                    Add to Cart
-                </a>
-            </td>
-        </tr>
-    }
+    <tbody id="articlesTableBody">
+        @foreach(var article in Model.Articles)
+        {
+            <tr>
+                <td>@article.Name</td>
+                <td>@article.Price</td>
+                <td>
+                    <a asp-page="./Cart"
+                       asp-route-handler="AddToCart"
+                       asp-route-articleId="@article.Id"
+                       class="btn btn-sm btn-primary">
+                        Add to Cart
+                    </a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
 
+<!-- "Show More" button -->
+<button id="showMoreBtn" class="btn btn-primary" onclick="loadMore()">
+    Show More
+</button>
+
 <a asp-page="./Index" class="btn btn-secondary">Back to Categories</a>
+
+<!-- JavaScript for lazy loading -->
+@section Scripts {
+<script>
+    // We'll track how many we've already shown
+    let skip = @Model.Articles.Count; // we already displayed 'Articles.Count'
+    let take = 5;                     // how many to fetch at a time
+    let categoryId = @Model.Id;       // from route, for the API request
+
+    async function loadMore() {
+        // Example: /api/articles?categoryId=3&skip=5&take=5
+        let url = `/api/articles?categoryId=${categoryId}&skip=${skip}&take=${take}`;
+
+        try {
+            let response = await fetch(url);
+            if (!response.ok) {
+                console.error("Error fetching articles:", response.statusText);
+                return;
+            }
+
+            let articles = await response.json();
+            appendArticles(articles);
+
+            // Increase 'skip' by however many articles were returned
+            skip += articles.length;
+
+            // If fewer than 'take' came back, we likely reached the end
+            if (articles.length < take) {
+                document.getElementById("showMoreBtn").style.display = "none";
+            }
+        } catch (error) {
+            console.error("Fetch error:", error);
+        }
+    }
+
+    function appendArticles(articles) {
+        let tbody = document.getElementById("articlesTableBody");
+
+        articles.forEach(article => {
+            let tr = document.createElement("tr");
+
+            // Name
+            let tdName = document.createElement("td");
+            tdName.textContent = article.name;
+            tr.appendChild(tdName);
+
+            // Price
+            let tdPrice = document.createElement("td");
+            tdPrice.textContent = article.price;
+            tr.appendChild(tdPrice);
+
+            // Add to Cart link
+            let tdCart = document.createElement("td");
+            let cartLink = document.createElement("a");
+            cartLink.href = `./Cart?handler=AddToCart&articleId=${article.id}`;
+            cartLink.classList.add("btn", "btn-sm", "btn-primary");
+            cartLink.textContent = "Add to Cart";
+            tdCart.appendChild(cartLink);
+
+            tr.appendChild(tdCart);
+
+            tbody.appendChild(tr);
+        });
+    }
+</script>
+}
