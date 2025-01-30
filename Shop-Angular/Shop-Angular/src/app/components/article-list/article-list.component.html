@@ -1,0 +1,13 @@
+<div>
+    <h2>Lista artykułów</h2>
+    
+    <ul>
+      <li *ngFor="let article of articles()">
+        <strong>{{ article.name }}</strong> (kategoria: {{ article.category }})
+        <button (click)="onRemoveArticle(article.id)">Usuń</button>
+      </li>
+    </ul>
+  
+    <button (click)="onAddNew()">Dodaj nowy artykuł</button>
+  </div>
+  

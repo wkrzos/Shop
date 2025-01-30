@@ -1,0 +1,27 @@
+<div class="article-form">
+    <h3>Dodaj nowy artykuł</h3>
+    <form (ngSubmit)="onSubmit()">
+      <div>
+        <label>Nazwa:</label>
+        <input [(ngModel)]="articleData.name" name="name" required>
+      </div>
+  
+      <div>
+        <label>Kategoria:</label>
+        <select [(ngModel)]="articleData.category" name="category" required>
+          <option *ngFor="let cat of getCategories()" [value]="cat">{{ cat }}</option>
+        </select>
+      </div>
+  
+      <div>
+        <label>Opis:</label>
+        <textarea [(ngModel)]="articleData.description" name="description"></textarea>
+      </div>
+  
+      <div class="buttons">
+        <button type="submit">Zapisz</button>
+        <button type="button" (click)="onClose()">Anuluj</button>
+      </div>
+    </form>
+  </div>
+  
